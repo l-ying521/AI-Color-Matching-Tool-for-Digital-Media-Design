@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI智能配色助手 - 面向数字媒体设计</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <div class="logo">🎨</div>
+            <h1 class="app-title">AI智能配色助手</h1>
+        </div>
+        <div class="nav-right">
+            <button class="nav-btn" id="themeToggle" title="切换主题">🌙</button>
+            <button class="nav-btn" id="aboutBtn" title="关于">ℹ️</button>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="main-container">
+        <!-- 左侧控制面板 -->
+        <aside class="left-panel">
+            <!-- 选项卡导航 -->
+            <div class="tab-nav">
+                <button class="tab-btn active" data-tab="wheel">🎡 色轮</button>
+                <button class="tab-btn" data-tab="random">🎲 随机</button>
+                <button class="tab-btn" data-tab="image">🖼️ 图片</button>
+                <button class="tab-btn" data-tab="ai">✨ AI</button>
+            </div>
+
+            <!-- 色轮面板 -->
+            <div class="tab-panel active" id="tab-wheel">
+                <div class="panel-section">
+                    <h3 class="section-title">选择基色</h3>
+                    <div class="color-wheel-container">
+                        <canvas id="colorWheel" width="260" height="260"></canvas>
+                        <div class="color-preview-row">
+                            <div class="color-preview-box" id="selectedColorPreview"></div>
+                            <span class="hex-display" id="selectedHex">#FF6B6B</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3 class="section-title">配色规则</h3>
+                    <div class="rule-buttons">
+                        <button class="rule-btn active" data-rule="complementary">互补色</button>
+                        <button class="rule-btn" data-rule="analogous">邻近色</button>
+                        <button class="rule-btn" data-rule="triadic">三角色</button>
+                        <button class="rule-btn" data-rule="split-complementary">分裂互补</button>
+                        <button class="rule-btn" data-rule="tetradic">矩形色</button>
+                        <button class="rule-btn" data-rule="monochromatic">单色渐变</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 随机生成面板 -->
+            <div class="tab-panel" id="tab-random">
+                <div class="panel-section">
+                    <h3 class="section-title">随机参数</h3>
+                    
+                    <div class="control-row">
+                        <label>颜色数量</label>
+                        <input type="range" id="colorCount" min="3" max="8" value="5">
+                        <span id="colorCountValue">5</span>
+                    </div>
+
+                    <div class="control-row">
+                        <label>饱和度范围</label>
+                        <div class="range-inputs">
+                            <input type="number" id="satMin" min="0" max="100" value="40">
+                            <span>~</span>
+                            <input type="number" id="satMax" min="0" max="100" value="80">
+                        </div>
+                    </div>
+
+                    <div class="control-row">
+                        <label>明度范围</label>
+                        <div class="range-inputs">
+                            <input type="number" id="lightMin" min="0" max="100" value="35">
+                            <span>~</span>
+                            <input type="number" id="lightMax" min="0" max="100" value="65">
+                        </div>
+                    </div>
+
+                    <div class="control-row">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="harmoniousMode" checked>
+                            <span>和谐模式</span>
+                        </label>
+                    </div>
+
+                    <button class="primary-btn full-width" id="randomGenerateBtn">
+                        🎲 随机生成
+                    </button>
+                </div>
+            </div>
+
+            <!-- 图片取色面板 -->
+            <div class="tab-panel" id="tab-image">
+                <div class="panel-section">
+                    <h3 class="section-title">图片取色</h3>
+                    
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">🖼️</div>
+                        <p class="upload-text">拖拽图片到此处，或点击选择</p>
+                        <p class="upload-hint">支持 JPG、PNG、WebP 格式</p>
+                        <input type="file" id="imageInput" accept="image/*" hidden>
+                    </div>
+
+                    <div class="preview-area" id="imagePreviewArea" style="display:none;">
+                        <img id="previewImage" alt="预览">
+                        <button class="remove-btn" id="removeImageBtn">×</button>
+                    </div>
+
+                    <div class="control-row">
+                        <label>提取颜色数</label>
+                        <input type="range" id="extractCount" min="3" max="8" value="5">
+                        <span id="extractCountValue">5</span>
+                    </div>
+
+                    <button class="primary-btn full-width" id="extractBtn" disabled>
+                        🎨 提取主色
+                    </button>
+
+                    <div class="loading-indicator" id="extractLoading" style="display:none;">
+                        <div class="spinner"></div>
+                        <span>正在提取颜色...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI生成面板 -->
+            <div class="tab-panel" id="tab-ai">
+                <div class="panel-section">
+                    <h3 class="section-title">AI智能配色</h3>
+                    
+                    <div class="ai-description">
+                        <label>描述你想要的风格</label>
+                        <textarea 
+                            id="aiPrompt" 
+                            placeholder="例如：温暖的秋天午后，橙黄色调，舒适怀旧..."
+                            rows="4"
+                        ></textarea>
+                    </div>
+
+                    <div class="style-presets">
+                        <span class="preset-tag" data-style="赛博朋克霓虹风格，高对比度">赛博朋克</span>
+                        <span class="preset-tag" data-style="莫兰迪色系，低饱和度，柔和高级">莫兰迪</span>
+                        <span class="preset-tag" data-style="北欧简约风，清新自然，明亮通透">北欧简约</span>
+                        <span class="preset-tag" data-style="复古港风，浓郁胶片感，暖色调">复古港风</span>
+                        <span class="preset-tag" data-style="清新自然，植物绿色系，生机活力">清新自然</span>
+                    </div>
+
+                    <button class="primary-btn full-width" id="aiGenerateBtn">
+                        ✨ AI智能生成
+                    </button>
+
+                    <div class="ai-loading" id="aiLoading" style="display:none;">
+                        <div class="ai-spinner"></div>
+                        <span>AI正在为您构思配色方案...</span>
+                    </div>
+
+                    <div class="ai-error" id="aiError" style="display:none;"></div>
+
+                    <div class="ai-tip">
+                        💡 提示：AI功能需要本地部署 Ollama 或配置云端 API
+                    </div>
+                </div>
+            </div>
+
+            <!-- HSV微调面板 -->
+            <div class="panel-section sliders-section">
+                <h3 class="section-title">颜色微调</h3>
+                <div class="selected-color-info">
+                    <div class="selected-preview" id="sliderColorPreview"></div>
+                    <div class="selected-info">
+                        <span class="selected-label">当前选中</span>
+                        <input type="text" class="hex-input" id="hexInput" value="#FF6B6B">
+                    </div>
+                </div>
+                
+                <div class="slider-group">
+                    <div class="slider-control">
+                        <div class="slider-label">
+                            <span>H 色相</span>
+                            <span id="hueValue">0°</span>
+                        </div>
+                        <input type="range" id="hueSlider" min="0" max="360" value="0" class="hue-slider">
+                    </div>
+                    
+                    <div class="slider-control">
+                        <div class="slider-label">
+                            <span>S 饱和度</span>
+                            <span id="satValue">100%</span>
+                        </div>
+                        <input type="range" id="satSlider" min="0" max="100" value="100">
+                    </div>
+                    
+                    <div class="slider-control">
+                        <div class="slider-label">
+                            <span>V 明度</span>
+                            <span id="valValue">50%</span>
+                        </div>
+                        <input type="range" id="valSlider" min="0" max="100" value="50">
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 中间展示区 -->
+        <section class="center-panel">
+            <!-- 色板展示 -->
+            <div class="palette-section">
+                <div class="section-header">
+                    <h2 class="section-title">当前配色</h2>
+                    <div class="export-panel">
+                        <span class="export-label">导出：</span>
+                        <button class="export-btn" data-format="css" title="导出CSS">📄 CSS</button>
+                        <button class="export-btn" data-format="png" title="导出PNG">🖼️ PNG</button>
+                        <button class="export-btn" data-format="json" title="导出JSON">📋 JSON</button>
+                    </div>
+                </div>
+                <div class="color-palette-display" id="colorPalette"></div>
+            </div>
+
+            <!-- 预览面板 -->
+            <div class="preview-section">
+                <div class="section-header">
+                    <h2 class="section-title">实时预览</h2>
+                    <div class="preview-tabs">
+                        <button class="preview-tab active" data-template="card">UI卡片</button>
+                        <button class="preview-tab" data-template="illustration">插画</button>
+                        <button class="preview-tab" data-template="poster">海报</button>
+                    </div>
+                </div>
+                <div class="preview-content" id="previewContent">
+                    <!-- UI卡片模板 -->
+                    <div class="preview-template ui-card active" id="template-card">
+                        <div class="mobile-card">
+                            <div class="card-cover"></div>
+                            <div class="card-content">
+                                <h3 class="card-title">探索自然之美</h3>
+                                <p class="card-desc">发现生活中的色彩艺术，让设计更有温度</p>
+                                <div class="card-tags">
+                                    <span class="tag">设计</span>
+                                    <span class="tag">创意</span>
+                                    <span class="tag">灵感</span>
+                                </div>
+                                <button class="card-btn">立即查看</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 插画模板 -->
+                    <div class="preview-template illustration" id="template-illustration">
+                        <div class="illustration-scene">
+                            <div class="sky"></div>
+                            <div class="sun"></div>
+                            <div class="mountain-back"></div>
+                            <div class="mountain-front"></div>
+                            <div class="tree tree-1"></div>
+                            <div class="tree tree-2"></div>
+                            <div class="ground"></div>
+                        </div>
+                    </div>
+
+                    <!-- 海报模板 -->
+                    <div class="preview-template poster" id="template-poster">
+                        <div class="poster-content">
+                            <div class="poster-decoration deco-1"></div>
+                            <div class="poster-decoration deco-2"></div>
+                            <h2 class="poster-title">色彩</h2>
+                            <h3 class="poster-subtitle">的艺术</h3>
+                            <p class="poster-text">THE ART OF COLOR</p>
+                            <div class="poster-line"></div>
+                            <span class="poster-date">2026.06</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 右侧历史记录 -->
+        <aside class="right-panel">
+            <div class="history-panel">
+                <div class="panel-header">
+                    <h3 class="section-title">历史记录</h3>
+                    <button class="text-btn" id="clearHistoryBtn">清空</button>
+                </div>
+                <div class="history-list" id="historyList"></div>
+                <div class="empty-state" id="emptyHistory">
+                    <div class="empty-icon">📭</div>
+                    <p>暂无历史记录</p>
+                    <p class="empty-hint">生成配色后将自动保存</p>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- 关于弹窗 -->
+    <div class="modal" id="aboutModal" style="display:none;">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <button class="modal-close" id="closeAboutBtn">×</button>
+            <h2>🎨 AI智能配色助手</h2>
+            <p class="modal-subtitle">面向数字媒体设计的智能配色工具</p>
+            <div class="modal-info">
+                <p><strong>版本：</strong>v1.0.0</p>
+                <p><strong>开发者：</strong>刘盈</p>
+                <p><strong>学号：</strong>2408090602018</p>
+                <p><strong>技术栈：</strong>原生 JavaScript + Canvas API</p>
+            </div>
+            <div class="modal-features">
+                <h4>功能特性</h4>
+                <ul>
+                    <li>🎡 色轮规则配色（6种经典配色法则）</li>
+                    <li>🎲 随机配色生成（可调节参数）</li>
+                    <li>🖼️ 图片取色（K-Means 聚类算法）</li>
+                    <li>✨ AI智能配色（支持 Ollama 本地部署）</li>
+                    <li>🎨 HSV 精确微调</li>
+                    <li>📱 实时预览（3种设计模板）</li>
+                    <li>📤 多格式导出（CSS/PNG/JSON/ASE）</li>
+                    <li>💾 本地历史记录</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast 提示 -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- 脚本加载 -->
+    <script src="js/ColorUtils.js"></script>
+    <script src="js/EventBus.js"></script>
+    <script src="js/StorageService.js"></script>
+    <script src="js/ExportService.js"></script>
+    <script src="js/ImageExtractor.js"></script>
+    <script src="js/ColorWheel.js"></script>
+    <script src="js/PaletteDisplay.js"></script>
+    <script src="js/SlidersPanel.js"></script>
+    <script src="js/PreviewPanel.js"></script>
+    <script src="js/RandomPanel.js"></script>
+    <script src="js/ImagePanel.js"></script>
+    <script src="js/HistoryPanel.js"></script>
+    <script src="js/App.js"></script>
+</body>
+</html>
