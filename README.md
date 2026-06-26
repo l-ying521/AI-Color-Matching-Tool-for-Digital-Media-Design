@@ -62,25 +62,38 @@ python -m SimpleHTTPServer 8000
 
 ```
 AI-Color-Matching-Tool-for-Digital-Media-Design/
-├── index.html          # 主页面
-├── index.mvp.html      # MVP 版本页面
+├── index.html                                    # 主页面
+├── index.mvp.html                                # MVP 版本页面
+├── README.md                                     # 项目说明文档
+├── UI设计需求文档.md                              # UI设计规范
+├── 2408090602018_刘盈_需求规格说明书.docx         # 需求分析报告
+├── 2408090602018_刘盈_可行性分析报告.docx         # 可行性分析报告
+├── 2408090602018_刘盈_概要设计说明书.docx         # 概要设计说明书
+├── 2408090602018_刘盈_详细设计说明书.docx         # 详细设计说明书
+├── 2408090602018_刘盈_软件测试计划与报告.docx     # 测试计划与报告
+├── 24080906020182408090602018_刘盈_期末大作业说明书.docx # 期末大作业说明书
+├── 2408090602018_刘盈_软件工程大作业.zip          # 作业打包文件
 ├── css/
-│   └── style.css       # 样式文件
+│   └── style.css                                 # 样式文件
 ├── js/
-│   ├── App.js          # 主应用控制器
-│   ├── ColorUtils.js   # 颜色工具库（颜色转换、配色算法）
-│   ├── ColorWheel.js   # 色轮组件（Canvas渲染）
-│   ├── EventBus.js     # 事件总线（组件通信）
-│   ├── ExportService.js # 导出服务（多格式导出）
-│   ├── HistoryPanel.js # 历史记录面板
-│   ├── ImageExtractor.js # 图片颜色提取器（K-Means算法）
-│   ├── ImagePanel.js   # 图片上传面板
-│   ├── PaletteDisplay.js # 色板显示组件
-│   ├── PreviewPanel.js # 预览面板（三种模板）
-│   ├── RandomPanel.js  # 随机配色面板
-│   ├── SlidersPanel.js # HSV滑块面板
-│   └── StorageService.js # 存储服务（localStorage）
-└── docs/               # 项目文档（见下方）
+│   ├── App.js                                    # 主应用控制器
+│   ├── ColorUtils.js                             # 颜色工具库（颜色转换、配色算法）
+│   ├── ColorWheel.js                             # 色轮组件（Canvas渲染）
+│   ├── EventBus.js                               # 事件总线（组件通信）
+│   ├── ExportService.js                          # 导出服务（多格式导出）
+│   ├── HistoryPanel.js                           # 历史记录面板
+│   ├── ImageExtractor.js                         # 图片颜色提取器（K-Means算法）
+│   ├── ImagePanel.js                             # 图片上传面板
+│   ├── PaletteDisplay.js                         # 色板显示组件
+│   ├── PreviewPanel.js                           # 预览面板（三种模板）
+│   ├── RandomPanel.js                            # 随机配色面板
+│   ├── SlidersPanel.js                           # HSV滑块面板
+│   └── StorageService.js                         # 存储服务（localStorage）
+└── 2408090602018_刘盈_软件工程大作业/            # 完整提交材料文件夹
+    ├── 2408090602018_刘盈_演示视频.mp4           # 演示视频
+    ├── 2408090602018_刘盈_答辩PPT.pptx           # 答辩PPT
+    ├── 2408090602018_刘盈_答辩视频.mp4           # 答辩视频
+    └── *.docx                                    # 各设计文档
 ```
 
 ---
